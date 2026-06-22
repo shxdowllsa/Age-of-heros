@@ -1,4 +1,8 @@
 -- =============================================================================
+-- SCRIPT ANTI-AFK UNIVERSAL + SCRIPT COMPLETO AGE OF HEROES
+-- =============================================================================
+
+-- =============================================================================
 -- BASE & SERVIÇOS DO ROBLOX
 -- =============================================================================
 local Players = game:GetService("Players")
@@ -8,6 +12,7 @@ local HttpService = game:GetService("HttpService")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local VirtualUser = game:GetService("VirtualUser")
 
 local player = Players.LocalPlayer
 local punchEvent = ReplicatedStorage:WaitForChild("Events"):WaitForChild("Punch")
@@ -22,9 +27,24 @@ local Config = {
     HideTitle = false,
     Invisible = false,
     KillPlayer = false,
-    SelectedPlayerTarget = nil
+    SelectedPlayerTarget = nil,
+    AntiAFK = true
 }
 
+-- =============================================================================
+-- ANTI-AFK UNIVERSAL
+-- =============================================================================
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new(0, 0))
+    print("Anti-AFK ativado: Evitou a desconexão!")
+end)
+
+print("Script Anti-AFK executado com sucesso.")
+
+-- =============================================================================
+-- INICIALIZAÇÃO DO PERSONAGEM
+-- =============================================================================
 -- Aguarda o personagem carregar completamente
 if not player.Character then
     repeat task.wait()
@@ -487,7 +507,7 @@ end)
 
 -- Aba Visual
 NewToggle("Visual", "Hide Username / Title", "HideTitle")
-NewButton("Visual", "Go Invisible", function() goInvisible() end) -- Movido para cá
+NewButton("Visual", "Go Invisible", function() goInvisible() end)
 
 -- Aba Server
 NewButton("Server", "Rejoin Server", function() TeleportService:Teleport(game.PlaceId, player) end)
@@ -508,27 +528,4 @@ end)
 
 -- Sistema de Arrastar (Drag) Corrigido
 local dragging, dragInput, dragStart, startPos
-local function update(input)
-    local delta = input.Position - dragStart
-    MenuToggle.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-MenuToggle.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = MenuToggle.Position
-        
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
-        update(input)
-    end
-end)
+local functio
